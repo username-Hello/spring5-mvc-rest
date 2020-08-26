@@ -14,7 +14,9 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Arrays;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -50,12 +52,27 @@ public class VendorControllerTest {
         vendor2.setId(2l);
         vendor2.setName("Sam");
         vendor2.setVendorUrl(VendorController.BASE_URL + "/2");
-        
+    
         when(vendorService.getAllVendors()).thenReturn(Arrays.asList(vendor1, vendor2));
-        
+    
         mockMvc.perform(get(VendorController.BASE_URL)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.vendors", hasSize(2)));
+    }
+    
+    @Test
+    public void getVendorById() throws Exception {
+        VendorDTO vendorDTO = new VendorDTO();
+        vendorDTO.setId(1l);
+        vendorDTO.setName("Michale");
+        vendorDTO.setVendorUrl(VendorController.BASE_URL + "/1");
+        
+        when(vendorService.getVendorById(anyLong())).thenReturn(vendorDTO);
+        
+        mockMvc.perform(get(VendorController.BASE_URL + "/1")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name", equalTo("Michale")));
     }
 }
