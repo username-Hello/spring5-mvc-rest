@@ -16,6 +16,7 @@ import java.util.Optional;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.when;
 
 public class VendorServiceImplTest {
@@ -47,12 +48,21 @@ public class VendorServiceImplTest {
         Vendor vendor = new Vendor();
         vendor.setId(1l);
         vendor.setName("Michale");
-        
+    
         when(vendorRepository.findById(anyLong())).thenReturn(Optional.of(vendor));
-        
+    
         VendorDTO findVendor = vendorService.getVendorById(1l);
-        
+    
         assertThat(findVendor.getId(), equalTo(vendor.getId()));
         assertThat(findVendor.getName(), equalTo(vendor.getName()));
+    }
+    
+    @Test
+    public void deleteVendor() {
+        //when
+        vendorService.deleteVendorById(1L);
+        
+        //then
+        then(vendorRepository).should().deleteById(anyLong());
     }
 }

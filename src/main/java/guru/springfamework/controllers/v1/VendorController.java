@@ -35,4 +35,10 @@ public class VendorController {
     public VendorDTO createNewVendor(@PathVariable Long id, @RequestBody VendorDTO vendorDTO) {
         return vendorService.createNewVendor(vendorDTO);
     }
+    
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteVendor(@PathVariable Long id) {
+        vendorService.deleteVendorById(id);
+    }
 }

@@ -18,9 +18,9 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -84,14 +84,23 @@ public class VendorControllerTest extends AbstractRestControllerTest {
         vendorDTO.setId(1l);
         vendorDTO.setName("Michale");
         vendorDTO.setVendorUrl(VendorController.BASE_URL + "/1");
-        
+    
         when(vendorService.createNewVendor(any(VendorDTO.class))).thenReturn(vendorDTO);
-        
+    
         mockMvc.perform(post(VendorController.BASE_URL + "/1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(vendorDTO)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.name", equalTo("Michale")))
                 .andExpect(jsonPath("$.vendor_url", equalTo(VendorController.BASE_URL + "/1")));
+    }
+    
+    @Test
+    public void deleteVendor() throws Exception {
+        mockMvc.perform(delete(VendorController.BASE_URL + "/1")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+        
+        verify(vendorService).deleteVendorById(anyLong());
     }
 }
