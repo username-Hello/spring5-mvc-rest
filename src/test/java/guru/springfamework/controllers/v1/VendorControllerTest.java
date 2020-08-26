@@ -18,6 +18,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -34,10 +35,13 @@ public class VendorControllerTest extends AbstractRestControllerTest {
     
     MockMvc mockMvc;
     
+    VendorDTO vendorDTO_1;
+    VendorDTO vendorDTO_2;
+    
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        
+        vendorDTO_1 = new VendorDTO(1l, "Vendor 1", VendorController.BASE_URL + "/1");
         mockMvc = MockMvcBuilders.standaloneSetup(vendorController)
                 .setControllerAdvice(new RestResponseEntityExceptionHandler())
                 .build();
@@ -93,6 +97,28 @@ public class VendorControllerTest extends AbstractRestControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.name", equalTo("Michale")))
                 .andExpect(jsonPath("$.vendor_url", equalTo(VendorController.BASE_URL + "/1")));
+    }
+    
+    @Test
+    public void updateVendor() throws Exception {
+        given(vendorService.saveVendorByDTO(anyLong(), any(VendorDTO.class))).willReturn(vendorDTO_1);
+        
+        mockMvc.perform(put(VendorController.BASE_URL + "/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(vendorDTO_1)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name", equalTo(vendorDTO_1.getName())));
+    }
+    
+    @Test
+    public void patchVendor() throws Exception {
+        given(vendorService.patchVendor(anyLong(), any(VendorDTO.class))).willReturn(vendorDTO_1);
+        
+        mockMvc.perform(patch(VendorController.BASE_URL + "/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(vendorDTO_1)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name", equalTo(vendorDTO_1.getName())));
     }
     
     @Test

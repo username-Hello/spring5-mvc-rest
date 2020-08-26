@@ -12,5 +12,9 @@ public interface VendorService {
     
     VendorDTO createNewVendor(VendorDTO vendorDTO);
     
+    VendorDTO saveVendorByDTO(Long id, VendorDTO vendorDTO);
+    
+    VendorDTO patchVendor(Long id, VendorDTO vendorDTO);
+    
     void deleteVendorById(Long id);
 }
