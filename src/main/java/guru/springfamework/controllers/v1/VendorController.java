@@ -29,4 +29,10 @@ public class VendorController {
     public VendorDTO getVendorById(@PathVariable Long id) {
         return vendorService.getVendorById(id);
     }
+    
+    @PostMapping("/{id}")
+    @ResponseStatus(HttpStatus.CREATED)
+    public VendorDTO createNewVendor(@PathVariable Long id, @RequestBody VendorDTO vendorDTO) {
+        return vendorService.createNewVendor(vendorDTO);
+    }
 }
