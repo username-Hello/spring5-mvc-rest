@@ -19,9 +19,8 @@
     </parent>
 
     <modules>
-        <!--        <module>rest-model</module>-->
-        <module>spring5-mvc-rest-app</module>
         <module>rest-model</module>
+        <module>spring5-mvc-rest-app</module>
     </modules>
 
     <properties>
