@@ -1,11 +1,15 @@
 package guru.springframework.controllers.v1;
 
-import guru.springframework.api.v1.model.CustomerDTO;
-import guru.springframework.api.v1.model.CustomerListDTO;
+
+import guru.springframework.model.CustomerDTO;
+import guru.springframework.model.CustomerListDTO;
 import guru.springframework.services.CustomerService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+@Api(description = "This is my Customer Controller")
 @RestController
 @RequestMapping(CustomerController.BASE_URL)
 public class CustomerController {
@@ -17,13 +21,16 @@ public class CustomerController {
         this.customerService = customerService;
     }
     
+    @ApiOperation(value = "This will get a list of customers.", notes = "These are some notes about the API.")
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public CustomerListDTO getListOfCustomers() {
-        return new CustomerListDTO(customerService.getAllCustomers());
+        CustomerListDTO customerListDTO = new CustomerListDTO();
+        customerListDTO.getCustomers().addAll(customerService.getAllCustomers());
+        return customerListDTO;
     }
     
-    @GetMapping("/{id}")
+    @GetMapping({"/{id}"})
     @ResponseStatus(HttpStatus.OK)
     public CustomerDTO getCustomerById(@PathVariable Long id) {
         return customerService.getCustomerById(id);
@@ -35,19 +42,19 @@ public class CustomerController {
         return customerService.createNewCustomer(customerDTO);
     }
     
-    @PutMapping("/{id}")
+    @PutMapping({"/{id}"})
     @ResponseStatus(HttpStatus.OK)
     public CustomerDTO updateCustomer(@PathVariable Long id, @RequestBody CustomerDTO customerDTO) {
         return customerService.saveCustomerByDTO(id, customerDTO);
     }
     
-    @PatchMapping("/{id}")
+    @PatchMapping({"/{id}"})
     @ResponseStatus(HttpStatus.OK)
     public CustomerDTO patchCustomer(@PathVariable Long id, @RequestBody CustomerDTO customerDTO) {
         return customerService.patchCustomer(id, customerDTO);
     }
     
-    @DeleteMapping("/{id}")
+    @DeleteMapping({"/{id}"})
     @ResponseStatus(HttpStatus.OK)
     public void deleteCustomer(@PathVariable Long id) {
         customerService.deleteCustomerById(id);

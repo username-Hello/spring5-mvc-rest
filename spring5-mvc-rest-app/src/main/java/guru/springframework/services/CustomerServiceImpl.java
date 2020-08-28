@@ -1,9 +1,9 @@
 package guru.springframework.services;
 
 import guru.springframework.api.v1.mapper.CustomerMapper;
-import guru.springframework.api.v1.model.CustomerDTO;
 import guru.springframework.controllers.v1.CustomerController;
 import guru.springframework.domain.Customer;
+import guru.springframework.model.CustomerDTO;
 import guru.springframework.repositories.CustomerRepository;
 import org.springframework.stereotype.Service;
 
@@ -74,10 +74,13 @@ public class CustomerServiceImpl implements CustomerService {
             if (customerDTO.getLastname() != null) {
                 customer.setLastname(customerDTO.getLastname());
             }
-            return customerMapper.customerToCustomerDTO(customerRepository.save(customer));
-        }).map(customer -> {
-            customer.setCustomerUrl(getCustomerUrl(id));
-            return customer;
+    
+            CustomerDTO returnDto = customerMapper.customerToCustomerDTO(customerRepository.save(customer));
+    
+            returnDto.setCustomerUrl(getCustomerUrl(id));
+    
+            return returnDto;
+    
         }).orElseThrow(ResourceNotFoundException::new);
     }
     
